@@ -42,7 +42,7 @@ private:
 		sf::Sprite{m_planetTextures[5]},
 		sf::Sprite{m_planetTextures[6]},
 		sf::Sprite{m_planetTextures[7]},
-		sf::Sprite{m_planetTextures[9]}
+		sf::Sprite{m_planetTextures[8]}
 		};
 	sf::Texture m_gemsTexture;
 	sf::Sprite m_gemsSprite{ m_gemsTexture };

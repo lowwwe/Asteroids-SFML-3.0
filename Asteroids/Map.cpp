@@ -94,13 +94,15 @@ void Map::update(sf::Time deltaTime, sf::RenderWindow & window)
 		if (sf::Mouse::getPosition(window).x > Game::g_planets[i].location.position.x
 			&& sf::Mouse::getPosition(window).x < Game::g_planets[i].location.position.x + Game::g_planets[i].location.size.x
 			&& sf::Mouse::getPosition(window).y > Game::g_planets[i].location.position.y
-			&& sf::Mouse::getPosition(window).y < Game::g_planets[i].location.position.x + Game::g_planets[i].location.size.y)
+			&& sf::Mouse::getPosition(window).y < Game::g_planets[i].location.position.y + Game::g_planets[i].location.size.y)
 		{
 			Game::s_currentPlanet = i;
+		
 		}
 	}
 	if (m_mouseClick)
 	{
+		
 		if (sf::Mouse::getPosition(window).x > 750 && sf::Mouse::getPosition(window).y < 50)
 		{
 			Game::s_currentGameState = GameState::Hub;
