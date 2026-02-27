@@ -24,21 +24,21 @@ public:
 	~Hanger();
 	void render(sf::RenderWindow &t_window);
 	void update(sf::Time t_deltaTime, sf::RenderWindow &t_window);
-	void processEvents(sf::Event t_event);
+	void processEvents(const std::optional<sf::Event> t_event);
 	void initialise(sf::Font & t_font);
 private:
 	void  setupText(sf::Text &t_text, int t_size, sf::Vector2f t_position);
 	
 	sf::Texture m_backgroundTexture;
 	sf::Texture m_shipTexture;
-	sf::Sprite m_backgroundSprite;	
-	sf::Sprite m_shipSprite;
+	sf::Sprite m_backgroundSprite{ m_backgroundTexture };
+	sf::Sprite m_shipSprite{ m_shipTexture };
 	sf::Texture m_menuTexture;
-	sf::Sprite m_menuSprite;
+	sf::Sprite m_menuSprite{ m_menuTexture };
 	sf::Texture m_gemsTexture;
-	sf::Sprite m_gemsSprite;
+	sf::Sprite m_gemsSprite{ m_gemsTexture };
 	sf::Font m_font;
-	sf::Text m_confirm;
+	sf::Text m_confirm{ m_font };
 	int m_current = -1;
 	bool m_askForConfirmation = false;
 	const float OFFSET_SHIP_X = 10.0f;
@@ -77,12 +77,12 @@ private:
 	};
 	ShipArea m_currentArea{ ShipArea::None };
 	bool m_mouseClick{ false };
-	sf::Text m_optionText[4];
-	sf::Text m_costText[3];
-	sf::Text m_metalText[3];
-	sf::Text m_title;
-	sf::Text m_money;
-	sf::Text m_material;
+	sf::Text m_optionText[4] = { sf::Text{m_font},sf::Text{m_font},sf::Text{m_font},sf::Text{m_font} };
+	sf::Text m_costText[3] = { sf::Text{m_font},sf::Text{m_font},sf::Text{m_font} };;
+	sf::Text m_metalText[3] = { sf::Text{m_font},sf::Text{m_font},sf::Text{m_font} };;
+	sf::Text m_title{ m_font };
+	sf::Text m_money{ m_font };
+	sf::Text m_material{ m_font };
 
 };
 

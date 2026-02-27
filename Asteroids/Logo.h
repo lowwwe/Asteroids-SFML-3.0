@@ -15,6 +15,6 @@ public:
 private:
 	sf::Time m_delayTimer; // timer to delay display
 	sf::Font m_font;
-	sf::Text m_liceince;
+	sf::Text m_liceince{ m_font };
 };
 #endif // LOGO

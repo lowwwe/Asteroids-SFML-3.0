@@ -9,14 +9,14 @@ Help::Help()
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_backgroundSprite.setTexture(m_backgroundTexture);
-	m_backgroundSprite.setPosition(0.0f, 0.0f);
+	m_backgroundSprite.setTexture(m_backgroundTexture,true);
+	m_backgroundSprite.setPosition(sf::Vector2f{ 0.0f, 0.0f });
 	if (!m_menuIconTexture.loadFromFile("ASSETS\\IMAGES\\menuicon.png"))
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_menuIconSprite.setTexture(m_menuIconTexture);
-	m_menuIconSprite.setPosition(750.0f, 5.0f);
+	m_menuIconSprite.setTexture(m_menuIconTexture,true);
+	m_menuIconSprite.setPosition(sf::Vector2f{ 750.0f, 5.0f });
 }
 
 
@@ -68,34 +68,39 @@ void Help::update(sf::Time t_deltaTime, sf::RenderWindow & t_window)
 	}
 }
 
-void Help::processEvents(sf::Event t_event)
+void Help::processEvents(const std::optional<sf::Event> t_event)
 {
-	if (sf::Event::EventType::MouseMoved == t_event.type)
+	if (t_event->is<sf::Event::MouseMoved>())
 	{
+		const sf::Event::MouseMoved* newMouseMove = t_event->getIf<sf::Event::MouseMoved>();
+
 		m_nextHelpPage = -1;
-		if (t_event.mouseMove.y > 550)
+		if (newMouseMove->position.y > 550)
 		{
-			if (t_event.mouseMove.x > 20 && t_event.mouseMove.x  <  200)
+			if (newMouseMove->position.x > 20 && newMouseMove->position.x  <  200)
 			{
 				m_nextHelpPage = 0;
 			}
-			if (t_event.mouseMove.x  > 200 && t_event.mouseMove.x  < 380)
+			if (newMouseMove->position.x  > 200 && newMouseMove->position.x  < 380)
 			{
 				m_nextHelpPage = 1;
 			}
-			if (t_event.mouseMove.x  > 390 && t_event.mouseMove.x < 600)
+			if (newMouseMove->position.x  > 390 && newMouseMove->position.x < 600)
 			{
 				m_nextHelpPage = 2;
 			}
-			if (t_event.mouseMove.x  > 610 && t_event.mouseMove.x  < 780)
+			if (newMouseMove->position.x  > 610 && newMouseMove->position.x  < 780)
 			{
 				m_nextHelpPage = 3;
 			}
 		}
 	}
-	if (sf::Event::EventType::MouseButtonReleased == t_event.type)
+	if (t_event->is<sf::Event::MouseButtonReleased>())
 	{
-		if (t_event.mouseButton.x > 750 && t_event.mouseButton.y < 50)
+
+		const sf::Event::MouseButtonReleased* newMouseRelease = t_event->getIf < sf::Event::MouseButtonReleased>();
+
+		if (newMouseRelease->position.x > 750 && newMouseRelease->position.y < 50)
 		{
 			Game::s_currentGameState = GameState::Hub;
 		}

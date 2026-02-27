@@ -35,9 +35,9 @@ public:
 private:
 	EngineState m_engineState{ EngineState::Drift};
 	sf::Texture m_shipTexture;
-	sf::Sprite m_shipSprite;
+	sf::Sprite m_shipSprite{ m_shipTexture };
 	sf::Texture m_shieldTexture;
-	sf::Sprite m_shieldSprite;
+	sf::Sprite m_shieldSprite{ m_shipTexture };
 	float m_turnRate = 2.0f;
 	int m_accelarationRate = 20;
 	int m_AiTimer = 100;

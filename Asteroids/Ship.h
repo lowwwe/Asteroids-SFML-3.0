@@ -46,17 +46,17 @@ public:
 
 private:
 	sf::Texture m_shipTextures[2];
-	sf::Sprite m_shipSprite;
+	sf::Sprite m_shipSprite{ m_shipTextures[0]};
 	sf::Texture m_shieldTexture;
-	sf::Sprite m_shieldSprite;
+	sf::Sprite m_shieldSprite{ m_shieldTexture };
 	sf::Texture m_holdTexture;
-	sf::Sprite m_holdSprite;
+	sf::Sprite m_holdSprite{ m_holdTexture };
 	sf::Texture m_gemsTexture;
-	sf::Sprite m_gemsSprite;
+	sf::Sprite m_gemsSprite{ m_gemsTexture };
 	sf::Texture m_needleTexture;
-	sf::Sprite m_needleSprite;
+	sf::Sprite m_needleSprite{ m_needleTexture };
 	sf::Texture m_gaugeTexture;
-	sf::Sprite m_gaugeSprite;
+	sf::Sprite m_gaugeSprite{ m_gaugeTexture };
 	
 	
 	

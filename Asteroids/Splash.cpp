@@ -9,8 +9,8 @@ Splash::Splash()
 	{
 		std::cout << "problem with splash" << std::endl;
 	}
-	m_backgroundSprite.setTexture(m_backgroundTexture);
-	m_backgroundSprite.setPosition(0.0f, 0.0f);
+	m_backgroundSprite.setTexture(m_backgroundTexture,true);
+	m_backgroundSprite.setPosition(sf::Vector2f{ 0.0f, 0.0f });
 }
 
 
@@ -27,14 +27,16 @@ void Splash::update(sf::Time deltaTime)
 {
 }
 
-void Splash::processEvents(sf::Event event)
+void Splash::processEvents(const std::optional<sf::Event> t_event)
 {
-	if (sf::Event::EventType::KeyPressed == event.type)
+	if (t_event->is<sf::Event::KeyPressed>()) //user pressed a key
 	{
+
 		Game::s_currentGameState = GameState::Hub;
 	}
-	if (sf::Event::EventType::MouseButtonReleased == event.type)
+	if (t_event->is<sf::Event::MouseButtonPressed>()) // user presses the mouse
 	{
+
 		Game::s_currentGameState = GameState::Hub;
 	}
 }

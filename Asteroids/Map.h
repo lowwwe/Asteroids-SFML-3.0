@@ -12,7 +12,7 @@ public:
 	~Map();
 	void render(sf::RenderWindow &window);
 	void update(sf::Time deltaTime, sf::RenderWindow &window);
-	void processEvents(sf::Event event);
+	void processEvents(const std::optional<sf::Event> t_event);
 	void initialise(sf::Font & font);
 private:
 	static const int maxPlanets = 9;
@@ -31,17 +31,27 @@ private:
 	};
 	*/
 	sf::Texture m_backgroundTexture;
-	sf::Sprite m_backgroundSprite;
+	sf::Sprite m_backgroundSprite{ m_backgroundTexture };
 	sf::Texture m_planetTextures[maxPlanets];
-	sf::Sprite m_planetSprites[maxPlanets];
+	sf::Sprite m_planetSprites[maxPlanets] = { 
+		sf::Sprite{m_planetTextures[0]},
+		sf::Sprite{m_planetTextures[1]},
+		sf::Sprite{m_planetTextures[2]},
+		sf::Sprite{m_planetTextures[3]},
+		sf::Sprite{m_planetTextures[4]},
+		sf::Sprite{m_planetTextures[5]},
+		sf::Sprite{m_planetTextures[6]},
+		sf::Sprite{m_planetTextures[7]},
+		sf::Sprite{m_planetTextures[9]}
+		};
 	sf::Texture m_gemsTexture;
-	sf::Sprite m_gemsSprite;
+	sf::Sprite m_gemsSprite{ m_gemsTexture };
 	sf::Texture m_menuTexture;
-	sf::Sprite m_menuSprite;
+	sf::Sprite m_menuSprite{ m_menuTexture };
 	sf::Font m_font;
-	sf::Text m_planetName;
-	sf::Text m_pirates;
-	sf::Text m_gemProbability;
+	sf::Text m_planetName{ m_font };
+	sf::Text m_pirates{ m_font };
+	sf::Text m_gemProbability{ m_font };
 
 
 	bool m_mouseClick;

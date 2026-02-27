@@ -13,22 +13,23 @@ public:
 	~Market();
 	void render(sf::RenderWindow &t_window);
 	void update(sf::Time t_deltaTime, sf::RenderWindow &t_window);
-	void processEvents(sf::Event t_event);
+	void processEvents(const std::optional<sf::Event> t_event);
 	void initialise(sf::Font & t_font);
 
 private:
 	sf::Texture m_backgroundTexture;
-	sf::Sprite m_backgroundSprite;
+	sf::Sprite m_backgroundSprite{ m_backgroundTexture };
 	sf::Texture m_menuIconTexture;
-	sf::Sprite m_menuIconSprite;
+	sf::Sprite m_menuIconSprite{ m_menuIconTexture };
 	sf::Texture m_gemsTexture;
-	sf::Sprite m_gemsSprites[5];
+	sf::Sprite m_gemsSprites[5] = { sf::Sprite{m_gemsTexture},sf::Sprite{m_gemsTexture},sf::Sprite{m_gemsTexture},sf::Sprite{m_gemsTexture},sf::Sprite{m_gemsTexture} };
 	sf::Font m_font;	
-	sf::Text m_titleText;
-	sf::Text m_valueText;
-	sf::Text m_holdingText;
-	sf::Sound m_completeSound;
+	sf::Text m_titleText{ m_font };
+	sf::Text m_valueText{ m_font };
+	sf::Text m_holdingText{ m_font };
+	
 	sf::SoundBuffer m_completeSoundBuffer;
+	sf::Sound m_completeSound{ m_completeSoundBuffer };
 	int m_marketSelection = -1;
 
 	Contract m_contracts[MAX_CONTRACTS];

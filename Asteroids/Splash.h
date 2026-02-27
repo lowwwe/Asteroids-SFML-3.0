@@ -9,11 +9,11 @@ public:
 	~Splash();
 	void render(sf::RenderWindow &window);
 	void update(sf::Time deltaTime);
-	void processEvents(sf::Event event);
+	void processEvents(const std::optional<sf::Event> event);
 private:
 	sf::Time m_delayTimer; // timer to delay display
 	sf::Texture m_backgroundTexture;
-	sf::Sprite m_backgroundSprite;
+	sf::Sprite m_backgroundSprite{ m_backgroundTexture };
 };
 
 #endif // !SPLASH

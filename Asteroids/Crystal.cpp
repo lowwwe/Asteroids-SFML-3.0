@@ -49,8 +49,8 @@ void Crystal::loadContent()
 void Crystal::activate(sf::Vector2f t_location, int t_type)
 {
 	m_crystalSprite.setTexture(s_crystalTexture);
-	m_crystalSprite.setTextureRect(sf::IntRect{ t_type * 32,0,32,32 });
-	m_crystalSprite.setOrigin(16.0f, 16.0f);
+	m_crystalSprite.setTextureRect(sf::IntRect{ sf::Vector2i{t_type * 32,0}, sf::Vector2i{32,32} });
+	m_crystalSprite.setOrigin(sf::Vector2f{ 16.0f, 16.0f });
 	m_crystalSprite.setPosition(t_location);
 	m_type = t_type;
 	m_location = t_location;

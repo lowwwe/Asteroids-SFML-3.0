@@ -8,26 +8,26 @@ Hanger::Hanger()
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_backgroundSprite.setTexture(m_backgroundTexture);
-	m_backgroundSprite.setPosition(0.0f, 0.0f);
+	m_backgroundSprite.setTexture(m_backgroundTexture,true);
+	m_backgroundSprite.setPosition(sf::Vector2f{ 0.0f, 0.0f });
 	if (!m_shipTexture.loadFromFile("ASSETS\\IMAGES\\ship0.png"))
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_shipSprite.setTexture(m_shipTexture);
-	m_shipSprite.setPosition(OFFSET_SHIP_X, OFFSET_SHIP_Y);
+	m_shipSprite.setTexture(m_shipTexture,true);
+	m_shipSprite.setPosition(sf::Vector2f{ OFFSET_SHIP_X, OFFSET_SHIP_Y });
 	if (!m_menuTexture.loadFromFile("ASSETS\\IMAGES\\menuicon.png"))
 	{
 		std::cout << "problem with gems" << std::endl;
 	}
-	m_menuSprite.setTexture(m_menuTexture);
+	m_menuSprite.setTexture(m_menuTexture,true);
 	m_menuSprite.setPosition({ 750, 18 }); 
 	if (!m_gemsTexture.loadFromFile("ASSETS\\IMAGES\\gems.png"))
 	{
 		std::cout << "problem with gems" << std::endl;
 	}
-	m_gemsSprite.setTexture(m_gemsTexture);
-	m_gemsSprite.setTextureRect(sf::IntRect{ 160,0,32,32 });
+	m_gemsSprite.setTexture(m_gemsTexture,true);
+	m_gemsSprite.setTextureRect(sf::IntRect{ sf::Vector2i{ 160,0},sf::Vector2i{32,32} });
 	m_gemsSprite.setPosition(sf::Vector2f{ OFFSET_LEVEL_X  , OFFSET_LEVEL_Y + 340.0f });
 	
 }
@@ -146,19 +146,25 @@ void Hanger::update(sf::Time t_deltaTime, sf::RenderWindow & t_window)
 	m_mouseClick = false;
 }
 
-void Hanger::processEvents(sf::Event t_event)
+void Hanger::processEvents(const std::optional<sf::Event> t_event)
 {
-	if (sf::Event::MouseButtonReleased == t_event.type)
+	if (t_event->is<sf::Event::MouseButtonReleased>())
 	{
+		const sf::Event::MouseButtonReleased* newMouseRelease = t_event->getIf < sf::Event::MouseButtonReleased>();
+
 		m_mouseClick = true;
-		if (t_event.mouseButton.x > 750 && t_event.mouseButton.y < 50)
+		if (newMouseRelease->position.x > 750 && newMouseRelease->position.y < 50)
 		{
 			Game::s_currentGameState = GameState::Hub;
 		}
 	}
-	if (m_askForConfirmation && sf::Event::KeyPressed == t_event.type)
+	
+
+	if (m_askForConfirmation && t_event->is<sf::Event::KeyPressed>())
 	{
-		if (sf::Keyboard::Return == t_event.key.code)
+		const sf::Event::KeyPressed* newKeypress = t_event->getIf<sf::Event::KeyPressed>();
+
+		if (sf::Keyboard::Key::Enter == newKeypress->code)
 		{
 			Game::s_credits -= m_upgradeCost[m_current][Ship::s_currentLevels[m_current]];
 			Game::s_gems[5] -= m_upgradeMaterial[m_current][Ship::s_currentLevels[m_current]];

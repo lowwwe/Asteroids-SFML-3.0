@@ -42,13 +42,13 @@ void Bullet::update(sf::Time t_delta)
 void Bullet::reStart(int t_size, MyVector2D t_loaction, MyVector2D t_velocity, float t_heading, bool t_friendly)
 {
 	m_bulletSprite.setTexture(s_bulletTexture, true);
-	m_bulletSprite.setOrigin(8.0f, 8.0f);
+	m_bulletSprite.setOrigin(sf::Vector2f{ 8.0f, 8.0f });
 	m_alive = true;
 	m_friendly = t_friendly;
 	m_location = t_loaction;
 	m_velocity = t_velocity *5.0f;
 	m_framesLeft = s_bulletLife;
-	m_bulletSprite.setRotation(t_heading + 90.0f);
+	m_bulletSprite.setRotation(sf::degrees(t_heading + 90.0f));
 	m_bulletSprite.setPosition(m_location);
 	
 }

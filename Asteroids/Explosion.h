@@ -20,7 +20,7 @@ public:
 
 	static sf::Texture s_explosionTexture;
 	static sf::Texture s_dustTexture;
-	sf::Sprite m_explosionSprite;
+	sf::Sprite m_explosionSprite{ s_explosionTexture };
 	int m_frame;
 	int m_frameSize;
 	bool m_active = false;

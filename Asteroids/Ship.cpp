@@ -17,22 +17,22 @@ Ship::Ship()
 		std::cout << "problem loading small ship 1" << std::endl;
 	}
 	m_shipSprite.setTexture(m_shipTextures[0]);
-	m_shipSprite.setTextureRect(sf::IntRect{ 0,0,64,64 });
+	m_shipSprite.setTextureRect(sf::IntRect{ sf::Vector2i{ 0,0},sf::Vector2i{64,64} });
 	m_shipSprite.setPosition(m_location - MyVector2D{32, 32});
-	m_shipSprite.setOrigin(32.0f, 32.0f);
-	m_shipSprite.rotate(90);
+	m_shipSprite.setOrigin(sf::Vector2f{ 32.0f, 32.0f });
+	m_shipSprite.rotate(sf::degrees(90.0f));
 	if (!m_shieldTexture.loadFromFile("assets\\images\\shield.png"))
 	{
 		std::cout << "problem loading shield" << std::endl;
 	}
-	m_shieldSprite.setTexture(m_shieldTexture);
-	m_shieldSprite.setOrigin(32.0f, 32.0f);
+	m_shieldSprite.setTexture(m_shieldTexture,true);
+	m_shieldSprite.setOrigin(sf::Vector2f{ 32.0f, 32.0f });
 	m_shieldSprite.setPosition(m_location - MyVector2D{ 32, 32 });
 	if (!m_gemsTexture.loadFromFile("assets\\images\\gems.png"))
 	{
 		std::cout << "problem loading gems" << std::endl;
 	}
-	m_gemsSprite.setTexture(m_gemsTexture);
+	m_gemsSprite.setTexture(m_gemsTexture,true);
 	if (!m_holdTexture.loadFromFile("assets\\images\\hold.png"))
 	{
 		std::cout << "problem loading hold" << std::endl;
@@ -47,15 +47,15 @@ Ship::Ship()
 	{
 		std::cout << "problem loading gauge" << std::endl;
 	}
-	m_gaugeSprite.setTexture(m_gaugeTexture);
-	m_gaugeSprite.setPosition(620.0f, 480.0f);
+	m_gaugeSprite.setTexture(m_gaugeTexture,true);
+	m_gaugeSprite.setPosition(sf::Vector2f{ 620.0f, 480.0f });
 	if (!m_needleTexture.loadFromFile("assets\\images\\needle.png"))
 	{
 		std::cout << "problem loading needle" << std::endl;
 	}
-	m_needleSprite.setTexture(m_needleTexture);
-	m_needleSprite.setPosition(699.0f, 560.0f);
-	m_needleSprite.setOrigin(62.0f, 36.0f);
+	m_needleSprite.setTexture(m_needleTexture,true);
+	m_needleSprite.setPosition(sf::Vector2f{ 699.0f, 560.0f });
+	m_needleSprite.setOrigin(sf::Vector2f{ 62.0f, 36.0f });
 
 #ifdef _DEBUG
 	Ship::s_currentLevels[0] = 0;
@@ -115,7 +115,7 @@ void Ship::reset()
 	m_reloadDelay = m_reloadTime;
 	m_heading = 0.0f;
 	m_enginePowerOn = false;
-	m_shipSprite.setRotation(m_heading + 90.0f);
+	m_shipSprite.setRotation(sf::degrees(m_heading + 90.0f));
 	for (int i = 0; i < m_holdCapicity; i++)
 	{
 		m_hold[i] = -1;
@@ -131,13 +131,13 @@ void Ship::reset()
 void Ship::turnLeft()
 {
 	m_heading -= m_turnRate;
-	m_shipSprite.setRotation(m_heading +90.0f);
+	m_shipSprite.setRotation(sf::degrees(m_heading +90.0f));
 }
 
 void Ship::turnRight()
 {
 	m_heading += m_turnRate;
-	m_shipSprite.setRotation(m_heading + 90.0f);
+	m_shipSprite.setRotation(sf::degrees(m_heading + 90.0f));
 }
 
 void Ship::accelerate()
@@ -149,7 +149,7 @@ void Ship::accelerate()
 	trust = trust *  (m_accelarationRate*m_accelarationRate ) / 2.0f;
 	m_velocity += trust;
 	m_guageAngle -= m_guageAngleDelta;
-	m_needleSprite.setRotation(m_guageAngle);
+	m_needleSprite.setRotation(sf::degrees(m_guageAngle));
 	
 }
 
@@ -218,11 +218,11 @@ void Ship::engineFrame()
 	{
 		m_engineFrame += m_engineFrameIncrement;
 		int frame = static_cast<int>(m_engineFrame) % m_maxEngineFrame;
-		m_shipSprite.setTextureRect(sf::IntRect{ 64 * frame,0,64,64 });
+		m_shipSprite.setTextureRect(sf::IntRect{ sf::Vector2i{64 * frame,0},sf::Vector2i{64,64} });
 	}
 	else
 	{
-		m_shipSprite.setTextureRect(sf::IntRect{ 0,0,64,64 });
+		m_shipSprite.setTextureRect(sf::IntRect{ sf::Vector2i{ 0,0},sf::Vector2i{64,64} });
 	}
 }
 
@@ -255,7 +255,7 @@ void Ship::shield()
 			}			
 		}
 	}
-	m_needleSprite.setRotation(m_guageAngle);
+	m_needleSprite.setRotation(sf::degrees(m_guageAngle));
 }
 
 void Ship::renderShield(sf::RenderWindow & t_window)
@@ -277,9 +277,9 @@ void Ship::renderShield(sf::RenderWindow & t_window)
 	{
 		m_alphaUp = true;
 	}
-	m_shieldSprite.setColor(sf::Color{ 255,255,255,static_cast<sf::Uint8>(m_shieldAplha) });
+	m_shieldSprite.setColor(sf::Color{ 255,255,255,static_cast<std::uint8_t>(m_shieldAplha) });
 	t_window.draw(m_shieldSprite);
-	m_shieldSprite.rotate(0.05f);
+	m_shieldSprite.rotate(sf::degrees(0.05f));
 
 }
 
@@ -287,18 +287,18 @@ void Ship::renderHold(sf::RenderWindow & t_window)
 {
 	float holdOffsetX = 60.0f;
 	float holdOffsetY = 540.0f;
-	sf::IntRect textureRect{ 0,0,32,32 };
+	sf::IntRect textureRect{ sf::Vector2i{0,0},sf::Vector2i{32,32} };
 	
 	for (int i = 0; i < m_holdCapicity; i++)
 	{
-		m_holdSprite.setPosition(holdOffsetX, holdOffsetY);
+		m_holdSprite.setPosition(sf::Vector2f{ holdOffsetX, holdOffsetY });
 		holdOffsetX += 4.0f;
 		t_window.draw(m_holdSprite);
 		if (m_hold[i] != -1)
 		{
-			textureRect.left = m_hold[i] * 32;
+			textureRect.position.x = m_hold[i] * 32;
 			m_gemsSprite.setTextureRect(textureRect);			
-			m_gemsSprite.setPosition(holdOffsetX, holdOffsetY + 4.0f);			
+			m_gemsSprite.setPosition(sf::Vector2f{ holdOffsetX, holdOffsetY + 4.0f });
 			t_window.draw(m_gemsSprite);
 		}
 		holdOffsetX += 36.0f;
@@ -307,10 +307,10 @@ void Ship::renderHold(sf::RenderWindow & t_window)
 
 void Ship::renderGauge(sf::RenderWindow & t_window)
 {
-	sf::Uint8 red = 240u - static_cast<sf::Uint8>(m_guageAngle);
-	sf::Uint8 green = static_cast<sf::Uint8>(m_guageAngle);
-	sf::Uint8 blue = 0;
-	sf::Uint8 alpha = 255;
+	std::uint8_t red = 240u - static_cast<std::uint8_t>(m_guageAngle);
+	std::uint8_t green = static_cast<std::uint8_t>(m_guageAngle);
+	std::uint8_t blue = 0;
+	std::uint8_t alpha = 255;
 	m_gaugeSprite.setColor(sf::Color(red, green, blue, alpha));
 	t_window.draw(m_gaugeSprite);
 	t_window.draw(m_needleSprite);

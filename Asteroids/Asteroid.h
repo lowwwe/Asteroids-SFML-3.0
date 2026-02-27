@@ -28,7 +28,7 @@ public:
 
 private:
 	sf::Texture m_asteroidTexture[4];
-	sf::Sprite m_asteroidSprite;
+	sf::Sprite m_asteroidSprite{ m_asteroidTexture[0] };
 	MyVector2D m_velocity;
 	float m_angle = 0.0f;
 	float m_spinRate = 5.0f;

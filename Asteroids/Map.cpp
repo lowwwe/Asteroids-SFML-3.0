@@ -12,13 +12,13 @@ Map::Map()
 	{
 		std::cout << "problem with gems" << std::endl;
 	}
-	m_gemsSprite.setTexture(m_gemsTexture);
+	m_gemsSprite.setTexture(m_gemsTexture,true);
 
 	if (!m_menuTexture.loadFromFile("ASSETS\\IMAGES\\menuicon.png"))
 	{
 		std::cout << "problem with gems" << std::endl;
 	}
-	m_menuSprite.setTexture(m_menuTexture);
+	m_menuSprite.setTexture(m_menuTexture,true);
 	m_menuSprite.setPosition({ 750, 18 });
 
 
@@ -26,8 +26,8 @@ Map::Map()
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_backgroundSprite.setTexture(m_backgroundTexture);
-	m_backgroundSprite.setPosition(0.0f, 0.0f);
+	m_backgroundSprite.setTexture(m_backgroundTexture,true);
+	m_backgroundSprite.setPosition(sf::Vector2f{ 0.0f, 0.0f });
 	
 	
 	for (size_t i = 0; i < maxPlanets; i++)
@@ -37,7 +37,7 @@ Map::Map()
 		{
 			std::cout << "problem withf planet" << i << std::endl;
 		}
-		m_planetSprites[i].setTexture(m_planetTextures[i]);
+		m_planetSprites[i].setTexture(m_planetTextures[i],true);
 	}
 }
 
@@ -68,7 +68,7 @@ void Map::render(sf::RenderWindow & window)
 		m_gemProbability.setFillColor(colour);
 		for (int i = 0; i < 5; i++)
 		{
-			m_gemsSprite.setTextureRect({ i * 32,0,32,32 });
+			m_gemsSprite.setTextureRect(sf::IntRect{ sf::Vector2i{i * 32,0},sf::Vector2i{32,32} });
 			m_gemsSprite.setPosition({ 50.0f,140.0f + i * 40 });
 			window.draw(m_gemsSprite);
 			int gem =static_cast<int>( Game::g_planets[Game::s_currentPlanet].minerals[i] * 100.0);
@@ -91,10 +91,10 @@ void Map::update(sf::Time deltaTime, sf::RenderWindow & window)
 	Game::s_currentPlanet = -1;
 	for (size_t i = 0; i < maxPlanets; i++)
 	{
-		if (sf::Mouse::getPosition(window).x > Game::g_planets[i].location.left
-			&& sf::Mouse::getPosition(window).x < Game::g_planets[i].location.left + Game::g_planets[i].location.width
-			&& sf::Mouse::getPosition(window).y > Game::g_planets[i].location.top
-			&& sf::Mouse::getPosition(window).y < Game::g_planets[i].location.top + Game::g_planets[i].location.height)
+		if (sf::Mouse::getPosition(window).x > Game::g_planets[i].location.position.x
+			&& sf::Mouse::getPosition(window).x < Game::g_planets[i].location.position.x + Game::g_planets[i].location.size.x
+			&& sf::Mouse::getPosition(window).y > Game::g_planets[i].location.position.y
+			&& sf::Mouse::getPosition(window).y < Game::g_planets[i].location.position.x + Game::g_planets[i].location.size.y)
 		{
 			Game::s_currentPlanet = i;
 		}
@@ -117,10 +117,10 @@ void Map::update(sf::Time deltaTime, sf::RenderWindow & window)
 	m_mouseClick = false;
 }
 
-void Map::processEvents(sf::Event event)
+void Map::processEvents(const std::optional<sf::Event> t_event)
 {
-	if (sf::Event::MouseButtonReleased == event.type)
-	{
+	if (t_event->is<sf::Event::MouseButtonReleased>())
+	{	
 		m_mouseClick = true;
 	}
 }

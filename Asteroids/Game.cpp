@@ -6,15 +6,15 @@ GameState Game::s_currentGameState = GameState::Logo;
 Music Game::s_music = Music::Menu;
 GamePlay Game::s_gameplay;
 Planet Game::g_planets[] = {
-	{ "Moon",{ 0.0, 0.1, 0.1, 0.0, 0.0 }, 0.9, sf::IntRect{ 534,41,30,25 } ,true }, 
-	{ "Venus",{ 0.2, 0.2, 0.0, 0.0, 0.0 }, 0.1, sf::IntRect{ 250, 10, 30, 50 }, true },
-	{ "Mercury",{ 0.5, 0.1, 0.0, 0.0, 0.0 }, 0.5, sf::IntRect{ 280, 20, 80, 80 } , true },
-	{ "Earth",{ 0.15, 0.15, 0.15, 0.4, 0.0 }, 0.2, sf::IntRect{ 370, 45, 120, 90 }, false },
-	{ "Mars",{ 0.1, 0.8, 0.0, 0.0, 0.0 }, 0.3, sf::IntRect{ 506, 130, 100, 60 }, false },
-	{ "Jupiter",{ 0.1, 0.1, 0.1, 0.1, 0.1 }, 0.4, sf::IntRect{ 530, 240, 200, 200 }, false },
-	{ "Saturn",{ 0.2, 0.2, 0.2, 0.2, 0.2 }, 0.8, sf::IntRect{ 406, 331, 150, 120 } , false },
-	{ "neptune",{ 0.1, 0.0, 0.0, 0.4, 0.5 }, 0.9, sf::IntRect{ 360, 427, 130, 121 } , false },
-	{ "uranus",{ 0.0, 0.0, 0.0, 0.2, 0.5 }, 0.4, sf::IntRect{ 133, 400, 200, 200 } ,false }
+	{ "Moon",{ 0.0, 0.1, 0.1, 0.0, 0.0 }, 0.9, sf::IntRect{sf::Vector2i{ 534,41},sf::Vector2i{30,25 }} ,true },
+	{ "Venus",{ 0.2, 0.2, 0.0, 0.0, 0.0 }, 0.1, sf::IntRect{ sf::Vector2i{250, 10}, sf::Vector2i{30, 50 }}, true },
+	{ "Mercury",{ 0.5, 0.1, 0.0, 0.0, 0.0 }, 0.5, sf::IntRect{ sf::Vector2i{280, 20},sf::Vector2i{ 80, 80 } }, true },
+	{ "Earth",{ 0.15, 0.15, 0.15, 0.4, 0.0 }, 0.2, sf::IntRect{sf::Vector2i{ 370, 45},sf::Vector2i{ 120, 90 }}, false },
+	{ "Mars",{ 0.1, 0.8, 0.0, 0.0, 0.0 }, 0.3, sf::IntRect{sf::Vector2i{ 506, 130},sf::Vector2i{ 100, 60 }}, false },
+	{ "Jupiter",{ 0.1, 0.1, 0.1, 0.1, 0.1 }, 0.4, sf::IntRect{ sf::Vector2i{530, 240},sf::Vector2i{ 200, 200 }}, false },
+	{ "Saturn",{ 0.2, 0.2, 0.2, 0.2, 0.2 }, 0.8, sf::IntRect{ sf::Vector2i{406, 331},sf::Vector2i{ 150, 120 } }, false },
+	{ "neptune",{ 0.1, 0.0, 0.0, 0.4, 0.5 }, 0.9, sf::IntRect{sf::Vector2i{ 360, 427},sf::Vector2i{ 130, 121 } }, false },
+	{ "uranus",{ 0.0, 0.0, 0.0, 0.2, 0.5 }, 0.4, sf::IntRect{ sf::Vector2i{133, 400},sf::Vector2i{ 200, 200 } },false }
 
 
 };
@@ -39,10 +39,10 @@ Planet m_planets[maxPlanets]{
 	{ static_cast<std::string>("uranus"),		 0.0, 0.0, 0.0, 0.2, 0.5, 0.4, sf::IntRect{ 133, 400, 200, 200 } },
 };*/
 Game::Game() :
-	m_window(sf::VideoMode(800, 600), "Asteroids")
+	m_window(sf::VideoMode{ sf::Vector2u{800U, 600U}, 32U },  "Asteroids")
 	
 {
-	if (!m_font.loadFromFile("ASSETS\\FONTS\\nasalization-rg.ttf"))
+	if (!m_font.openFromFile("ASSETS\\FONTS\\nasalization-rg.ttf"))
 	{
 		std::cout << "Problem wioth font file" << std::endl;
 	}
@@ -57,14 +57,14 @@ Game::Game() :
 	{
 		std::cout << "Problem with menu musoic" << std::endl;
 	}
-	m_menuMusic.setLoop(true);
+	m_menuMusic.setLooping(true);
 	m_menuMusic.play();	
 	if (!m_levelmusic.openFromFile("ASSETS\\AUDIO\\levelmusic2.ogg"))
 	{
 		std::cout << "Problem with menu music" << std::endl;
 	}
 
-	m_levelmusic.setLoop(true);
+	m_levelmusic.setLooping(true);
 #ifdef _DEBUG
 	m_levelmusic.setVolume(1.0f);
 #endif // _DEBUG
@@ -108,11 +108,11 @@ void Game::run()
 
 void Game::processEvents()
 {
-	sf::Event currentEvent;
-	while (m_window.pollEvent(currentEvent))
+	while (const std::optional newEvent = m_window.pollEvent())
 	{
-		if (currentEvent.type == sf::Event::Closed)
-		{
+
+		if (newEvent->is<sf::Event::Closed>()) // close window message 
+		{		
 			m_window.close();
 		}
 		switch (s_currentGameState)
@@ -120,30 +120,30 @@ void Game::processEvents()
 		case GameState::Logo:
 			break;
 		case GameState::Splash:
-			m_splash.processEvents(currentEvent);
+			m_splash.processEvents(newEvent);
 			break;
 		case GameState::Start:
 			break;
 		case GameState::Hub:
-			m_hub.processEvents(currentEvent);
+			m_hub.processEvents(newEvent);
 			break;
 		case GameState::Map:
-			m_map.processEvents(currentEvent);
+			m_map.processEvents(newEvent);
 			break;
 		case GameState::Hanger:
-			m_hanger.processEvents(currentEvent);
+			m_hanger.processEvents(newEvent);
 			break;
 		case GameState::Market:
-			m_market.processEvents(currentEvent);
+			m_market.processEvents(newEvent);
 			break;
 		case GameState::Pause:
-			s_gameplay.pauseProcessEvents(currentEvent);
+			s_gameplay.pauseProcessEvents(newEvent);
 			break;
 		case GameState::Game:
-			s_gameplay.processEvents(currentEvent);
+			s_gameplay.processEvents(newEvent);
 			break;
 		case GameState::Help:
-			m_help.processEvents(currentEvent);
+			m_help.processEvents(newEvent);
 			break;
 		case GameState::Over:
 			break;

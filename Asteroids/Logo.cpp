@@ -41,6 +41,6 @@ void Logo::initialise(sf::Font & font)
 	m_liceince.setFillColor(sf::Color::White);
 
 	sf::FloatRect textSize = m_liceince.getGlobalBounds();
-	float xPosition = 400 - textSize.width / 2;
-	m_liceince.setPosition(xPosition, 290.0f);
+	float xPosition = 400 - textSize.size.x / 2;
+	m_liceince.setPosition(sf::Vector2f{ xPosition, 290.0f });
 }

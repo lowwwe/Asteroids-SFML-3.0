@@ -14,22 +14,22 @@ Market::Market()
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_backgroundSprite.setTexture(m_backgroundTexture);
-	m_backgroundSprite.setPosition(0.0f, 0.0f);
+	m_backgroundSprite.setTexture(m_backgroundTexture,true);
+	m_backgroundSprite.setPosition(sf::Vector2f{ 0.0f, 0.0f });
 	if (!m_menuIconTexture.loadFromFile("ASSETS\\IMAGES\\menuicon.png"))
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_menuIconSprite.setTexture(m_menuIconTexture);
-	m_menuIconSprite.setPosition(750.0f, 5.0f);
+	m_menuIconSprite.setTexture(m_menuIconTexture,true);
+	m_menuIconSprite.setPosition(sf::Vector2f{ 750.0f, 5.0f });
 	if (!m_gemsTexture.loadFromFile("ASSETS\\IMAGES\\gems.png"))
 	{
 		std::cout << "problem with gems" << std::endl;
 	}
 	for (int i = 0; i < GEM_SLOTS; i++)
 	{
-		m_gemsSprites[i].setTexture(m_gemsTexture);
-		m_gemsSprites[i].setTextureRect(sf::IntRect{ i*32,0,32,32 });
+		m_gemsSprites[i].setTexture(m_gemsTexture,true);
+		m_gemsSprites[i].setTextureRect(sf::IntRect{ sf::Vector2i{i * 32,0},sf::Vector2i{32,32} });
 	}
 	
 	setupContracts();
@@ -49,17 +49,17 @@ void Market::render(sf::RenderWindow & t_window)
 
 
 	m_holdingText.setString("Space Credits \n " + std::to_string(Game::s_credits));
-	m_holdingText.setPosition(100.0f, 110.0f);
+	m_holdingText.setPosition(sf::Vector2f{ 100.0f, 110.0f });
 	t_window.draw(m_holdingText);
 	int foundInHand = 0;
 	for (int i = 0; i < GEM_SLOTS; i++)
 	{
 		if (Game::s_gems[i] > 0)
 		{
-			m_gemsSprites[i].setPosition(100.0f, CONTRACT_OFFSET_Y + foundInHand * MARKET_LINE_GAP);
+			m_gemsSprites[i].setPosition(sf::Vector2f{ 100.0f, CONTRACT_OFFSET_Y + foundInHand * MARKET_LINE_GAP });
 			t_window.draw(m_gemsSprites[i]);
 			m_holdingText.setString(std::to_string(Game::s_gems[i]));
-			m_holdingText.setPosition(140.0f, CONTRACT_OFFSET_Y + foundInHand++ * MARKET_LINE_GAP);
+			m_holdingText.setPosition(sf::Vector2f{ 140.0f, CONTRACT_OFFSET_Y + foundInHand++ * MARKET_LINE_GAP });
 			t_window.draw(m_holdingText);
 		}
 	}
@@ -75,7 +75,7 @@ void Market::render(sf::RenderWindow & t_window)
 			{
 				for (int j = 0; j < m_contracts[contractNo].m_requiredGems[i]; j++)
 				{
-					m_gemsSprites[i].setPosition(CONTRACT_OFFSET_X + INTER_GEM_GAP * requiredGemNo++, CONTRACT_OFFSET_Y + found * MARKET_LINE_GAP);
+					m_gemsSprites[i].setPosition(sf::Vector2f{ CONTRACT_OFFSET_X + INTER_GEM_GAP * requiredGemNo++, CONTRACT_OFFSET_Y + found * MARKET_LINE_GAP });
 					t_window.draw(m_gemsSprites[i]);
 				}
 			}
@@ -92,7 +92,7 @@ void Market::render(sf::RenderWindow & t_window)
 				m_valueText.setFillColor(sf::Color{ 128,128,128,255 });
 			}
 			m_valueText.setString(std::to_string(m_contracts[contractNo].m_value));
-			m_valueText.setPosition(VALUE_OFFSET_X , CONTRACT_OFFSET_Y + found * MARKET_LINE_GAP);
+			m_valueText.setPosition(sf::Vector2f{ VALUE_OFFSET_X , CONTRACT_OFFSET_Y + found * MARKET_LINE_GAP });
 			t_window.draw(m_valueText);
 			found++;
 		}
@@ -105,12 +105,14 @@ void Market::update(sf::Time t_deltaTime, sf::RenderWindow & t_window)
 {
 }
 
-void Market::processEvents(sf::Event t_event)
+void Market::processEvents(const std::optional<sf::Event> t_event)
 {
 
-	if (sf::Event::EventType::MouseButtonReleased == t_event.type)
+	if (t_event->is<sf::Event::MouseButtonReleased>())
 	{
-		if (t_event.mouseButton.x > 750 && t_event.mouseButton.y < 50)
+		const sf::Event::MouseButtonReleased* newMouseRelease = t_event->getIf < sf::Event::MouseButtonReleased>();
+
+		if (newMouseRelease->position.x > 750 && newMouseRelease->position.y < 50)
 		{
 			Game::s_currentGameState = GameState::Hub;
 		}
@@ -136,14 +138,17 @@ void Market::processEvents(sf::Event t_event)
 			}
 		}
 	}
-	if (sf::Event::EventType::MouseMoved == t_event.type)
+
+	if (t_event->is<sf::Event::MouseMoved>())
 	{
+		const sf::Event::MouseMoved* newMouseMove = t_event->getIf<sf::Event::MouseMoved>();
+
 		m_marketSelection = -1;
-		if (t_event.mouseMove.x > CONTRACT_OFFSET_X && t_event.mouseMove.x < VALUE_OFFSET_X + 50.0f)
+		if (newMouseMove->position.x > CONTRACT_OFFSET_X && newMouseMove->position.x < VALUE_OFFSET_X + 50.0f)
 		{
-			if (t_event.mouseMove.y > CONTRACT_OFFSET_Y && t_event.mouseMove.x < CONTRACT_OFFSET_Y + 5 * MARKET_LINE_GAP)
+			if (newMouseMove->position.y > CONTRACT_OFFSET_Y && newMouseMove->position.x < CONTRACT_OFFSET_Y + 5 * MARKET_LINE_GAP)
 			{
-				m_marketSelection = static_cast<int>((t_event.mouseMove.y - CONTRACT_OFFSET_Y) / MARKET_LINE_GAP);
+				m_marketSelection = static_cast<int>((newMouseMove->position.y - CONTRACT_OFFSET_Y) / MARKET_LINE_GAP);
 			}
 		}
 

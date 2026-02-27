@@ -36,8 +36,8 @@ public:
 	void update(sf::Time t_deltaTime);
 	void pauseUpdate(sf::Time t_deltaTime);
 	void overUpdate(sf::Time t_deltaTime);
-	void processEvents(sf::Event t_event);
-	void pauseProcessEvents(sf::Event t_event);
+	void processEvents(const std::optional<sf::Event> t_event);
+	void pauseProcessEvents(const std::optional<sf::Event> t_event);
 	void initialise(sf::Font & t_font);
 	void setupLevel(int t_levelNo);
 private:
@@ -49,21 +49,22 @@ private:
 	Enemy m_PirateShip;
 	Crystal m_crystals[MAX_CRYSTALS];
 	sf::SoundBuffer m_laserSoundBuffer;  
-	sf::Sound m_laserSound;
+	sf::Sound m_laserSound{ m_laserSoundBuffer };
 	sf::SoundBuffer m_enemyLaserSoundBuffer;
-	sf::Sound m_enemyLaserSound;
+	sf::Sound m_enemyLaserSound{ m_enemyLaserSoundBuffer };
 	sf::SoundBuffer m_explosionSoundBuffer;
-	sf::Sound m_explosionSound;
+	sf::Sound m_explosionSound{ m_explosionSoundBuffer };
 	sf::SoundBuffer m_engineSoundBuffer;
-	sf::Sound m_engineSound;
+	sf::Sound m_engineSound{ m_engineSoundBuffer };
 	sf::SoundBuffer m_asteroidBreakSoundBuffer;
-	sf::Sound m_asteroidBreakSound;
-	sf::Text m_pausePromptText;
-	sf::Text m_resumeText;
-	sf::Text m_returnToBaseText;
-	sf::Text m_gameOverText;
-	sf::Font m_font; 
-	sf::Text m_fuelLeft;
+	sf::Sound m_asteroidBreakSound{ m_asteroidBreakSoundBuffer };
+	sf::Font m_font;
+	sf::Text m_pausePromptText{ m_font };
+	sf::Text m_resumeText{ m_font };
+	sf::Text m_returnToBaseText{ m_font };
+	sf::Text m_gameOverText{ m_font };
+	
+	sf::Text m_fuelLeft{ m_font };
 
 
 	bool m_shipTrunRight{ false };

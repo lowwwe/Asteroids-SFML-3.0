@@ -24,7 +24,7 @@ public:
 private:
 	void screenWrap();
 	int m_framesLeft = 180;
-	sf::Sprite m_bulletSprite;
+	sf::Sprite m_bulletSprite{ s_bulletTexture };
 	
 
 };

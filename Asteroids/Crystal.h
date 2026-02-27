@@ -10,7 +10,7 @@ public:
 	static sf::Texture s_crystalTexture;
 	MyVector2D m_location;
 	int m_type;
-	sf::Sprite m_crystalSprite;
+	sf::Sprite m_crystalSprite{ s_crystalTexture };
 	bool m_active = false;
 
 	

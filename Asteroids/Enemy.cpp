@@ -10,17 +10,17 @@ Enemy::Enemy() : m_active {false}
 		std::cout << "problem loading enemy ship " << std::endl;
 	}
 	
-	m_shipSprite.setTexture(m_shipTexture);
-	m_shipSprite.setTextureRect(sf::IntRect{ 0,0,64,64 });
-	m_shipSprite.setPosition(100.0,100.0);
-	m_shipSprite.setOrigin(32.0f, 32.0f);
-	m_shipSprite.rotate(90);
+	m_shipSprite.setTexture(m_shipTexture,true);
+	m_shipSprite.setTextureRect(sf::IntRect{ sf::Vector2i{0,0},sf::Vector2i{64,64} });
+	m_shipSprite.setPosition(sf::Vector2f{ 100.0,100.0 });
+	m_shipSprite.setOrigin(sf::Vector2f{ 32.0f, 32.0f });
+	m_shipSprite.rotate(sf::degrees(90));
 	if (!m_shieldTexture.loadFromFile("assets\\images\\shield.png"))
 	{
 		std::cout << "problem loading shield" << std::endl;
 	}
-	m_shieldSprite.setTexture(m_shieldTexture);
-	m_shieldSprite.setOrigin(32.0f, 32.0f);
+	m_shieldSprite.setTexture(m_shieldTexture,true);
+	m_shieldSprite.setOrigin(sf::Vector2f{ 32.0f, 32.0f });
 	m_shieldSprite.setPosition(m_location - MyVector2D{ 32, 32 });
 }
 
@@ -91,7 +91,7 @@ bool Enemy::update(sf::Time t_delta)
 				break;
 			case EngineState::Turn:				
 				m_heading += m_turnRate;
-				m_shipSprite.setRotation(m_heading + 90.0f);
+				m_shipSprite.setRotation(sf::degrees(m_heading + 90.0f));
 				break;
 			default:
 				break;
@@ -184,11 +184,11 @@ void Enemy::engineFrame()
 	{
 		m_engineFrame += m_engineFrameIncrement;
 		int frame = static_cast<int>(m_engineFrame) % m_maxEngineFrame;
-		m_shipSprite.setTextureRect(sf::IntRect{ 64 * frame,0,64,64 });
+		m_shipSprite.setTextureRect(sf::IntRect{ sf::Vector2i{64 * frame,0},sf::Vector2i{64,64 } });
 	}
 	else
 	{
-		m_shipSprite.setTextureRect(sf::IntRect{ 0,0,64,64 });
+		m_shipSprite.setTextureRect(sf::IntRect{ sf::Vector2i{0,0},sf::Vector2i{64,64} });
 	}
 }
 
@@ -229,7 +229,7 @@ void Enemy::renderShield(sf::RenderWindow & t_window)
 	{
 		m_alphaUp = true;
 	}
-	m_shieldSprite.setColor(sf::Color{ 255,255,255,static_cast<sf::Uint8>(m_shieldAplha) });
+	m_shieldSprite.setColor(sf::Color{ 255,255,255,static_cast<std::uint8_t>(m_shieldAplha)});
 	t_window.draw(m_shieldSprite);
-	m_shieldSprite.rotate(0.05f);
+	m_shieldSprite.rotate(sf::degrees(0.05f));
 }

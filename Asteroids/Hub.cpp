@@ -10,8 +10,8 @@ Hub::Hub()
 	{
 		std::cout << "problem with menu" << std::endl;
 	}
-	m_backgroundSprite.setTexture(m_backgroundTexture);
-	m_backgroundSprite.setPosition(0.0f, 0.0f);
+	m_backgroundSprite.setTexture(m_backgroundTexture,true);
+	m_backgroundSprite.setPosition(sf::Vector2f{ 0.0f, 0.0f });
 }
 
 
@@ -75,11 +75,12 @@ void Hub::update(sf::Time deltaTime, sf::RenderWindow &window)
 	}
 }
 
-void Hub::processEvents(sf::Event event)
+void Hub::processEvents(const std::optional<sf::Event> t_event)
 {
 
-	if (sf::Event::EventType::MouseButtonReleased == event.type)
+	if (t_event->is<sf::Event::MouseButtonReleased>())
 	{
+
 		switch (m_currentRegion)
 		{
 		case HubRegion::Hanger:

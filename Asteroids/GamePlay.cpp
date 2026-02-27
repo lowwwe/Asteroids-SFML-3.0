@@ -27,7 +27,7 @@ GamePlay::GamePlay()
 		std::cout << "problem loading engine sound" << std::endl;
 	}
 	m_engineSound.setBuffer(m_engineSoundBuffer);
-	m_engineSound.setLoop(true);
+	m_engineSound.setLooping(true);
 	m_engineSound.stop();
 	if (!m_asteroidBreakSoundBuffer.loadFromFile("assets\\audio\\Asteroid breaking.wav"))
 	{
@@ -168,21 +168,23 @@ void GamePlay::overUpdate(sf::Time t_deltaTime)
 	m_shipTrunRight = false;
 }
 
-void GamePlay::processEvents(sf::Event t_event)
+void GamePlay::processEvents(const std::optional<sf::Event> t_event)
 {
-	if (sf::Event::KeyPressed == t_event.type)
+	if (t_event->is<sf::Event::KeyPressed>()) //user pressed a key
 	{
-		if (sf::Keyboard::Right == t_event.key.code || sf::Keyboard::D == t_event.key.code)
+		const sf::Event::KeyPressed* newKeypress = t_event->getIf<sf::Event::KeyPressed>();
+
+		if (sf::Keyboard::Key::Right == newKeypress->code || sf::Keyboard::Key::D == newKeypress->code)
 		{
 			m_shipTrunRight = true;
 			m_shipTrunLeft = false;
 		}
-		if (sf::Keyboard::Left == t_event.key.code || sf::Keyboard::A == t_event.key.code)
+		if (sf::Keyboard::Key::Left == newKeypress->code || sf::Keyboard::Key::A == newKeypress->code)
 		{
 			m_shipTrunLeft = true;
 			m_shipTrunRight = false;
 		}
-		if (sf::Keyboard::Up == t_event.key.code || sf::Keyboard::W == t_event.key.code)
+		if (sf::Keyboard::Key::Up == newKeypress->code || sf::Keyboard::Key::W == newKeypress->code)
 		{
 			if (!m_shipAccelerate && m_ship.m_sheildEnergy > 0)
 			{
@@ -191,15 +193,15 @@ void GamePlay::processEvents(sf::Event t_event)
 				std::cout << "play engine" << std::endl;
 			}
 		}
-		if (sf::Keyboard::LControl == t_event.key.code || sf::Keyboard::RControl == t_event.key.code)
+		if (sf::Keyboard::Key::LControl == newKeypress->code || sf::Keyboard::Key::RControl == newKeypress->code)
 		{
 			m_fire = true; 			
 		}
-		if (sf::Keyboard::LShift == t_event.key.code || sf::Keyboard::RShift == t_event.key.code)
+		if (sf::Keyboard::Key::LShift == newKeypress->code || sf::Keyboard::Key::RShift == newKeypress->code)
 		{
 			m_ship.m_sheildOn = true;
 		}
-		if (sf::Keyboard::LAlt == t_event.key.code || sf::Keyboard::RAlt == t_event.key.code)
+		if (sf::Keyboard::Key::LAlt == newKeypress->code || sf::Keyboard::Key::RAlt == newKeypress->code)
 		{
 			if (m_ship.m_sheildEnergy > 100 && !m_ship.m_hyperJump )
 			{
@@ -212,51 +214,56 @@ void GamePlay::processEvents(sf::Event t_event)
 			}
 		}
 	}
-	if (sf::Event::KeyReleased == t_event.type)
+	if (t_event->is<sf::Event::KeyReleased>()) //user pressed a key
 	{
-		if (sf::Keyboard::Right == t_event.key.code || sf::Keyboard::D == t_event.key.code  )
+		const sf::Event::KeyReleased* newKeyrelease = t_event->getIf<sf::Event::KeyReleased>();
+		if (sf::Keyboard::Key::Right == newKeyrelease->code || sf::Keyboard::Key::D == newKeyrelease->code)
 		{
 			m_shipTrunRight = false;
 		}
-		if (sf::Keyboard::Left == t_event.key.code || sf::Keyboard::A == t_event.key.code)
+		if (sf::Keyboard::Key::Left == newKeyrelease->code || sf::Keyboard::Key::A == newKeyrelease->code)
 		{
 			m_shipTrunLeft = false;
 		
 		}
-		if (sf::Keyboard::Up == t_event.key.code || sf::Keyboard::W == t_event.key.code)
+		if (sf::Keyboard::Key::Up == newKeyrelease->code || sf::Keyboard::Key::W == newKeyrelease->code)
 		{
 			m_shipAccelerate = false;
 			m_engineSound.stop();
 			m_ship.m_enginePowerOn = false;
 		}
-		if (sf::Keyboard::LShift == t_event.key.code || sf::Keyboard::RShift == t_event.key.code)
+		if (sf::Keyboard::Key::LShift == newKeyrelease->code || sf::Keyboard::Key::RShift == newKeyrelease->code)
 		{
 			m_ship.m_sheildOn = false;
 		}
-		if (sf::Keyboard::Escape == t_event.key.code)
+		if (sf::Keyboard::Key::Escape == newKeyrelease->code)
 		{
 			Game::s_currentGameState = GameState::Pause;
 		}
 	}
 }
 
-void GamePlay::pauseProcessEvents(sf::Event t_event)
+void GamePlay::pauseProcessEvents(const std::optional<sf::Event> t_event)
 {
-	if (sf::Event::EventType::MouseMoved == t_event.type)
+	if (t_event->is<sf::Event::MouseMoved>())
 	{
+		const sf::Event::MouseMoved* newMouseMove = t_event->getIf<sf::Event::MouseMoved>();
+
+	
+	
 		m_pauseOption = PauseOption::None;
 	//	m_resumeText.setFillColor(sf::Color::White);
 //		m_returnToBaseText.setFillColor(sf::Color::White);
-		if (t_event.mouseMove.x > 300 && t_event.mouseMove.x < 500)
+		if (newMouseMove->position.x > 300 && newMouseMove->position.x < 500)
 		{
-			if (t_event.mouseMove.y > 250 && t_event.mouseMove.y < 300)
+			if (newMouseMove->position.y > 250 && newMouseMove->position.y < 300)
 			{
 				m_pauseOption = PauseOption::Resume;
 				m_resumeText.setFillColor(sf::Color::Yellow);
 				m_returnToBaseText.setFillColor(sf::Color::White);
 				
 			}
-			if (t_event.mouseMove.y > 300 && t_event.mouseMove.y < 350)
+			if (newMouseMove->position.y > 300 && newMouseMove->position.y < 350)
 			{
 				m_pauseOption = PauseOption::Base;
 				m_returnToBaseText.setFillColor(sf::Color::Yellow);
@@ -264,8 +271,9 @@ void GamePlay::pauseProcessEvents(sf::Event t_event)
 			}			
 		}
 	}
-	if (sf::Event::EventType::MouseButtonReleased == t_event.type)
-	{
+	if (t_event->is<sf::Event::MouseButtonReleased>())
+	{	
+	
 		if (m_pauseOption == PauseOption::Resume)
 		{
 			Game::s_currentGameState = GameState::Game;
@@ -283,16 +291,18 @@ void GamePlay::pauseProcessEvents(sf::Event t_event)
 			m_pauseOption = PauseOption::None;
 		}
 	}
-	if (sf::Event::KeyReleased == t_event.type)
+	if (t_event->is<sf::Event::KeyReleased>()) //user pressed a key
 	{
-		if (sf::Keyboard::Escape == t_event.key.code)
+		const sf::Event::KeyReleased* newKeyrelease = t_event->getIf<sf::Event::KeyReleased>();
+		if (sf::Keyboard::Key::Escape == newKeyrelease->code)
 		{
 			Game::s_currentGameState = GameState::Game;
 		}
 	}
-	if (sf::Event::KeyPressed == t_event.type)
+	if (t_event->is<sf::Event::KeyPressed>()) //user pressed a key
 	{
-		if (sf::Keyboard::Up == t_event.key.code)
+		const sf::Event::KeyPressed* newKeypress = t_event->getIf<sf::Event::KeyPressed>();
+		if (sf::Keyboard::Key::Up == newKeypress->code)
 		{
 			if (m_pauseOption == PauseOption::Base)
 			{
@@ -307,7 +317,7 @@ void GamePlay::pauseProcessEvents(sf::Event t_event)
 				m_resumeText.setFillColor(sf::Color::White);
 			}
 		}
-		if (sf::Keyboard::Down == t_event.key.code)
+		if (sf::Keyboard::Key::Down == newKeypress->code)
 		{
 			if (m_pauseOption == PauseOption::Resume)
 			{
@@ -322,7 +332,7 @@ void GamePlay::pauseProcessEvents(sf::Event t_event)
 				m_returnToBaseText.setFillColor(sf::Color::White);
 			}
 		}
-		if (sf::Keyboard::Return == t_event.key.code)
+		if (sf::Keyboard::Key::Enter == newKeypress->code)
 		{
 			if (m_pauseOption == PauseOption::Resume)
 			{
